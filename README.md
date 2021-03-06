@@ -9,8 +9,8 @@ This assignment is a weather dashboard that runs in the browser and features dyn
 
 The following images shows the web application's appearance and functionality:
 
-![weather-dashboard](weather-snip-1.png)
+![weather-dashboard](weather-snip-1.PNG)
 
 ## Deployed Project Location: 
-* Page published at: https://almurawski15.github.io/password-generator/
+* Page published at: https://almurawski15.github.io/weather-dashboard/
 
