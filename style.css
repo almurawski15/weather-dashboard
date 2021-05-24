@@ -1,0 +1,34 @@
+/* Page Layout */
+
+#top-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+header {
+    text-align: center;
+    padding: 3%;
+    font-size: 45px;
+    font-family: sans-serif;
+}
+
+p {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Search box styling */
+
+#search-container {
+    float: left;
+    width: 30%;
+    margin: 2%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#search-title {
+    text-align: center;
+    padding-top: 2%;
+}

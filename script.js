@@ -17,3 +17,11 @@ let fiveDayForecast = $(".five-day-forecast");
 //Display current date 
 let currentDate = moment().format('L');
 $("#current-date").text("(" + currentDate + ")"); 
+
+
+if (JSON.parse(localStorage.getItem("searchHistoryList")) === null) {
+    console.log("searchHistoryList not found")
+} else {
+    console.log("searchHistoryList loaded into searchHistoryArr");
+    renderSearchHistoryList();
+}
