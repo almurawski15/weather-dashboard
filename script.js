@@ -54,7 +54,7 @@ let buttonClicked = function (event) {
 }
 
 let getWeatherForecast = function (city) {
-    let apiKey = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=imperial' + '&appid=e1cda767f020cb0ebf52c83958433ba3';
+    let apiKey = ;
 
     fetch(apiKey)
         .then(function (response) {
