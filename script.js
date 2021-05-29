@@ -1,17 +1,11 @@
 //list of variables for easy access
-//Left search column
-let searchHistoryList = $(".search-history-list");
-let searchCityInput = $(".search-city");
-let searchCityButton = $(".search-city-button");
-let clearHistoryButton = $(".clear-history");
 
-//Right column information
-let currentCity = $(".current-city");
-let currentTemp = $(".current-temp");
-let currentHumidity = $(".current-humidity");
-let currentWindSpeed = $(".current-wind-speed");
-let UVindex = $(".uv-index");
-let fiveDayForecast = $(".five-day-forecast");
+let currentCity = document.querySelector("#current-city");
+let currentTemp = document.querySelector("#current-temp");
+let currentHumidity = document.querySelector("#current-humidity");
+let currentWindSpeed = document.querySelector("#current-wind-speed");
+let UVindex = document.querySelector("#uv-index");
+let fiveDayForecast = document.querySelector("#five-day-forecast");
 
 //Display current date 
 let currentDate = moment().format('L');
@@ -31,46 +25,102 @@ function startSearch (event) {
         getWeatherForecast (userInput);
         getFiveDay (userInput);
         saveSearch (userInput);
-        searchClear ();
     }
 }
 
-// clear search function
-let searchClear = function () {
-    userInput.value = '';
+let searchArry = JSON.parse(localStorage.getItem("searches"));
+let searchContainer = document.querySelector("#search-container");
+let searchHistoryList = document.querySelector("#search-city-list");
+
+function saveSearch (userInput) {
+    let searchCityButton = document.createElement("button");
+    searchCityButton.textContent = userInput;
+    searchCityButton.setAttribute("class", "pastsearch");
+    searchCityButton.setAttribute("id", userInput);
+
+    searchContainer.append(searchCityButton);
+
+    if (searchArry == null) {
+        searchArry = [userInput];
+        localStorage.setItem("searches", JSON.stringify(searchArry));
+    } else {
+        searchArry.push(searchCityButton.innerHTML);
+        localStorage.setItem("searches", JSON.stringify(searchArry));
+    }
+
 }
 
-// 
+displayPreviousSearches();
 
+function displayPreviousSearches () {
+    let pulledSearches = JSON.parse(localStorage.getItem("searches"));
+
+    if (searchArry != null) {
+        for (let i=0; i < pulledSearches.length; i++) {
+            let search = pulledSearches[i];
+            let btn = document.createElement("button");
+            btn.textContent = search;
+            btn.setAttribute("class", "previoussearch");
+            searchContainer.append(btn);
+        }
+    }
+}
 
 // initiate button on click
-let buttonClicked = function (event) {
-    let newSearch = event.target.getAttribute('');
+let previousSearchClicks = $("#search-container");
+    previousSearchClicks.on("click", ".previoussearch", repeatSearch);
 
-    if (newSearch) {
-        getWeatherForecast(newSearch);
-        getFiveDay(newSearch);
-    }
+function repeatSearch(event) {
+    let buttonClicked = $(event.target);
+    userInput = buttonClicked[0].innerHTML;
+    document.querySelector("#search-value").value = buttonClicked[0].innerHTML;
+    startSearch(event);
 }
 
-let getWeatherForecast = function (city) {
-    let apiKey = ;
+function getWeatherForecast(userInput) {
+    
+    let apiKey = 'https://api.openweathermap.org/data/2.5/weather?q=' + userInput + '&appid=d423b4bd90678b82501d075774b8c2f7' + '&units=imperial';
 
     fetch(apiKey)
         .then(function (response) {
-            if (response.ok) {
-                response.json().then(function (data) {
-                    displayWeather(data,city);
-                });
-            } else {
-                alert('Error: ' + response.statusText);
-            }
-        })
-        .catch(function (error) {
-            alert('OpenWeatherMap not able to load')
-        });
-};
+           return response.json();
+})
+    .then(function (response) {
 
+        currentCity.textContent = " " + response.name;
 
-searchCityButton.addEventListener('click', startSearch);
-clearHistoryButton.addEventListener('click', buttonClicked);
+        let currentIcon = document.createElement("img");
+        currentIcon.setAttribute("src", "http://openweathermap.org/img/w" + response.weather[0].icon + ".png");
+        currentIcon.setAttribute("cookie", "SameSite=Lax");
+        city.appendChild(currentIcon);
+
+        currentTemp.textContent = " " + response.main.currentTemp + "°F";
+        currentHumidity.textContent= " " + response.main.currentHumidity + "%";
+        currentWindSpeed.textContent = " " + response.currentWindSpeed + " MPH";
+
+        let lat = response.coord.lat;
+        let long = response.coord.lon;
+
+        let requestUVIndex = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + long + "&appid=d423b4bd90678b82501d075774b8c2f7";
+
+        fetch(requestUVIndex)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(response) {
+                UVindex.textContent = " " + response.value;
+
+                let currentUVIndex = parseFloat(response.value);
+
+                if (currentUVIndex < 2) {
+                    UVindex.setAttribute("style", "background-color: green;");
+                } else if (currentUVIndex < 7) {
+                    UVindex.setAttribute("style", "background-color: yellow;");
+                } else {
+                    UVindex.setAttribute("style", "background-color: red;");
+                }
+            })
+    })
+
+    // need to finish 5-day forecast 
+}
